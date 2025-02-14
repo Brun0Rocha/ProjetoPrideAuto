@@ -1,0 +1,52 @@
+nav {
+    background-color: #fff;
+    display: flex;
+    padding: .4em 1em;
+    align-items: center;
+}
+
+ul {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.item a {
+    position: relative;
+    padding: .2em;
+    font-size: .8em;
+    font-weight: 600;
+    text-decoration: none;
+    color: #000;
+}
+
+.login a {
+    font-size: .8em;
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+    text-decoration: underline;
+}
+
+img {
+    width: 60px;
+    height: 40px;
+}
+
+.item a::before {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 0%;
+    transition: width 1s ease-in-out;
+}
+
+.item a::before {
+    left: 0;
+    bottom: 0;
+    background-color: #ff6262;
+}
+
+.item a:hover::before {
+    width: 100%;
+}
