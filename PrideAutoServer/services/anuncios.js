@@ -1,3 +1,4 @@
+const { randomUUID } = require('crypto')
 const fs = require('fs')
 const anunciosJson = JSON.parse(fs.readFileSync('db.json'))
 
@@ -14,11 +15,17 @@ function getAnuncios(search) {
             if (search.modelo) {
                 matches = matches && anuncio.modelo.includes(search.modelo)
             }
-            if (search.anoVeiculo) {
-                matches = matches && anuncio.anoVeiculo.includes(search.ano)
+            if (search.anoVeiculoDe) {
+                matches = matches && anuncio.anoVeiculo >= search.anoVeiculoDe
             }
-            if (search.anoModelo) {
-                matches = matches && anuncio.anoModelo.includes(search.ano)
+            if (search.anoVeiculoAte) {
+                matches = matches && anuncio.anoVeiculo <= search.anoVeiculoAte
+            }
+            if (search.valorDe) {
+                matches = matches && anuncio.valor >= search.valorDe
+            }
+            if (search.valorAte) {
+                matches = matches && anuncio.valor <= search.valorAte
             }
             
             return matches
@@ -37,20 +44,37 @@ function getAnuncioById(id) {
     return anuncio
 }
 
-function getAnunciosFiltradosMarca(marca) {
+function createNewAnuncio(anuncio) {
+    
+    anuncio.id = randomUUID()
+    
     const anuncios = anunciosJson
-    const anunciosFiltrados = anuncios.filter(anuncio => anuncio.marca === marca)
+    const newAnuncios = [...anuncios, anuncio]
+    fs.writeFileSync('db.json', JSON.stringify(newAnuncios)) 
+    
+}
 
-    if(marca) {
-        return anunciosFiltrados
-    } else {
-        return anuncios
-    }
+function deleteAnuncio(id) {
+    const anuncios = anunciosJson
+    const newListAnuncios = anuncios.filter(anuncio => anuncio.id !== id)
+    fs.writeFileSync('db.json', JSON.stringify(newListAnuncios))
+        
+}
+
+function patchAnuncio(id, anuncio) {
+    let anuncios = anunciosJson
+    const AnuncioModificado = anuncios.filter(anuncio => anuncio.id === id)
+    const conteudoModificado = { ...AnuncioModificado, ...anuncio}
+
+    anuncios[AnuncioModificado] = conteudoModificado
+    fs.writeFileSync('db.json', JSON.stringify(anuncios))
 }
 
 module.exports = {
     getAnuncios,
     getAnuncioById,
-    getAnunciosFiltradosMarca
+    createNewAnuncio,
+    deleteAnuncio,
+    patchAnuncio
 
 }
